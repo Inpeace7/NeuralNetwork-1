@@ -1,6 +1,6 @@
 //
-//  neuralnet.cpp
-//  neuralnet
+//  neuralnetwork.cpp
+//  neuralnetwork
 //
 //  Created by Ethan Caballero on 1/13/14.
 //
