@@ -28,7 +28,7 @@ typedef std::vector<Link> Links;
 
 
 
-/* Node Class and its functions --------------------------------------------------------*/
+/* Node Class and its functions -------------------------------------------------------*/
 class Node
 {
 public:
