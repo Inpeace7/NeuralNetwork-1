@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <vector>
+#include <iostream>
 
 /*Inputs to network can be changed at bottom of code*/
 
@@ -35,7 +36,11 @@ public:
 	Node(int OutCount, int idx);
  
 	void setOut(double val){OutValue = val;}
-	double getOutValue() const { return OutValue; }
+	double getOutValue() const {return OutValue;}
+
+    Links getOutWeights() const {return OutWeights;}
+
+    int getIndex() const {return index;}
 	
 	void FeedFwd(const Level& level);
  
@@ -139,6 +144,8 @@ public:
 	void FeedFwd(const Value& In);
 	void backProp(const Value& Goal);
 	void getOutput(Value& results) const;
+
+    void SaveWeight();
 	
 private:
 	typedef std::vector<Level> Levels;
@@ -169,6 +176,27 @@ Network::Network(const Topol& Topol)
 	}
 }
 
+void Network::SaveWeight(){
+
+    // 遍历所有层
+	for(int levelNum = 0; levelNum < levels.size() - 1; ++levelNum){
+        // 遍历一层下的所有神经元
+		Level& level = levels[levelNum];
+        std::cout << levelNum << ":" << level.size() << std::endl;
+
+        for (int i = 0; i < level.size(); i++) {
+            Node& node = level[i];
+
+            // 遍历每个node下的权重
+            std::cout  << node.getIndex() << std::endl;
+            for (int j = 0; j < node.getOutWeights().size(); j++) {
+                std::cout << node.getOutWeights()[j].weight << " ";
+            }
+            std::cout << std::endl;
+        }
+	}
+}
+
 void Network::FeedFwd(const Value& InVals) {
  
 	for(int i = 0; i < InVals.size(); ++i){
@@ -195,7 +223,8 @@ void Network::backProp(const Value& Goal) {
 		double delta = Goal[i] - OutLevel[i].getOutValue();
 		error += delta * delta;
 	}
- 
+
+    //L2 正则化
 	error = std::sqrt(error / Goal.size());
  
 	/*current error*/
@@ -254,10 +283,10 @@ void test(Network& network, Value&& In)
 	network.getOutput(r);
  
 	for(double val : In){
-		printf("%.4f ", val);
+		//printf("%.4f ", val);
 	}
  
-	printf(": %.4f\n", r[0]);
+	//printf(": %.4f\n", r[0]);
 }
 /*-------------------------------------------------------*/
 
@@ -279,5 +308,7 @@ int main()
 	test(network, {1, 0});
 	test(network, {0, 1});
 	test(network, {1, 1});
+
+    network.SaveWeight();
 }
 /*----------------------------------------------------------------*/
