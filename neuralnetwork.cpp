@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <vector>
 #include <iostream>
+#include <sys/time.h>
 
 /*Inputs to network can be changed at bottom of code*/
 
@@ -75,11 +76,12 @@ float Node::eta   =  0.10;
 
 Node::Node(int OutCount, int idx)
 {
+    //srand((unsigned)time(0));  
+    //srand(131);  
 	for(int i = 0; i < OutCount; ++i){
 		Link con;
 		con.DerivWeight = 0;
 		con.weight = rand0to1();
-		
 		OutWeights.push_back(con);
 	}
  
@@ -167,7 +169,8 @@ Network::Network(const Topol& Topol)
 		/*question mark means 0 if else*/
 		
 		Level& currentLevel = levels.back();
-		
+	
+        // 最后一项为偏执项
 		for(int n = 0; n <= Topol[levelNum]; ++n){
 			currentLevel.push_back(Node(OutCount, n));
 		}
@@ -275,18 +278,19 @@ void train(Network& network, Value&& In, Value&& Goal)
 	network.backProp(Goal);
 }
 
-void test(Network& network, Value&& In)
+//void test(Network& network, Value&& In)
+void test(Network& network, Value& In)
 {
 	network.FeedFwd(In);
  
 	Value r;
 	network.getOutput(r);
  
-	for(double val : In){
-		//printf("%.4f ", val);
-	}
+	//for(double val : In){
+        //printf("%.4f ", val);
+	//}
  
-	//printf(": %.4f\n", r[0]);
+	//printf("output: %.4f\n", r[0]);
 }
 /*-------------------------------------------------------*/
 
@@ -294,14 +298,49 @@ void test(Network& network, Value&& In)
 /*for setting input to topology values, training values, & testing values*/
 int main()
 {
-	Topol Topol = {2, 4, 1};
+    int l1 = 1;
+    int l2 = 1;
+    int l3 = 1;
+    int output = 1;
+    int PrNum = 10000000;
+
+
+
+	Topol Topol = {l1, l2, l3, output};
 	Network network(Topol);
- 
+
+    std::vector<Value> prvec;
+    for(int i = 0; i < PrNum; i++){
+        Value prdata;
+        for (int j = 0; i < l1; i++){
+            prdata.push_back(rand()/double(RAND_MAX));
+        }
+        prvec.push_back(prdata);
+    }
+
+
+    struct timeval dwStart;  
+    struct timeval dwEnd;  
+    gettimeofday(&dwStart,NULL);  
+    for (int k = 0; k < PrNum; k++){
+	    test(network, prvec[k]);
+    }
+    gettimeofday(&dwEnd,NULL);  
+
+    int interval = 1000000*(dwEnd.tv_sec-dwStart.tv_sec)+(dwEnd.tv_usec-dwStart.tv_usec);
+    std::cout << interval << std::endl;
+    std::cout << float(interval)/1000000 << std::endl;
+
+    std::cout << (PrNum/float(interval))*1000000 << std::endl;
+
+
+ /*
 	for(int i = 0; i < 4999; ++i){
 		train(network, {0.0, 0.0}, {0.0});
 		train(network, {0.0, 1.0}, {1.0});
 		train(network, {1.0, 0.0}, {1.0});
 		train(network, {1.0, 1.0}, {0.0});
+        
 	}
 	
 	test(network, {0, 0});
@@ -310,5 +349,17 @@ int main()
 	test(network, {1, 1});
 
     network.SaveWeight();
+    */
 }
 /*----------------------------------------------------------------*/
+/*
+        struct timeval dwEnd;  
+        unsigned long dwTime=0;  
+        int i=0,j=0;  
+        gettimeofday(&dwStart,NULL);  
+        for(i=0;i<100000;i++)  
+        {  
+                ;  
+        }  
+        gettimeofday(&dwEnd,NULL);  
+*/

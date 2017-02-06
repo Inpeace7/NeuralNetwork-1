@@ -1,9 +1,12 @@
 SHELL=/bin/sh
-CC=g++ -g -w -std=c++11
+#CC=g++ -g -w -std=c++11
+CC=g++ -g -O2
 
-neuralnetwork : neuralnetwork.o
-	${CC} -o neuralnetwork neuralnetwork.o
+neuralnetwork : neuralnetwork_99.o
+	${CC} -o neuralnetwork neuralnetwork_99.o
 
-neuralnetwork.o : neuralnetwork.cpp 
-	${CC} -c neuralnetwork.cpp
+neuralnetwork_99.o : neuralnetwork_99.cpp 
+	${CC} -c neuralnetwork_99.cpp
 
+clean:
+	rm neuralnetwork neuralnetwork_99.o  -rf 

@@ -303,11 +303,12 @@ void test(Network& network, Value& In)
 /*for setting input to topology values, training values, & testing values*/
 int main()
 {
-    int l1 = 4;
-    int l2 = 2;
-    int l3 = 6;
+
+    int l1 = 50;
+    int l2 = 10;
+    int l3 = 10;
     int output = 1;
-    int PrNum = 500;
+    int PrNum = 1000000;
 
 
 	Topol Topol; //= {l1, l2, l3, output};
@@ -323,7 +324,12 @@ int main()
     for(int i = 0; i < PrNum; i++){
         Value prdata;
         for (int j = 0; j < l1; j++){
-            prdata.push_back(rand()/double(RAND_MAX));
+
+            if (j < 100){
+                prdata.push_back(rand()/double(RAND_MAX));
+            } else {
+                prdata.push_back(0);
+            }
         }
         prvec.push_back(prdata);
     }
@@ -343,7 +349,8 @@ int main()
 
     std::cout << (PrNum/float(interval))*1000000 << std::endl;
 
-    network.SaveWeight();
+    //network.SaveWeight();
+}
 
  /*
 	for(int i = 0; i < 4999; ++i){
@@ -361,7 +368,6 @@ int main()
 
     network.SaveWeight();
     */
-}
 /*----------------------------------------------------------------*/
 /*
         struct timeval dwEnd;  
@@ -373,4 +379,38 @@ int main()
                 ;  
         }  
         gettimeofday(&dwEnd,NULL);  
+
+    long PrNum = 1000000000000000;
+
+    //std::vector<Value> prvec;
+    //for(int i = 0; i < PrNum; i++){
+    //    Value prdata;
+    //    prdata.push_back(rand()/double(RAND_MAX));
+    //    prdata.push_back(rand()/double(RAND_MAX));
+    //    prvec.push_back(prdata);
+    //}
+
+
+    struct timeval dwStart;  
+    struct timeval dwEnd;  
+    gettimeofday(&dwStart,NULL);  
+    for (long k = 0; k < PrNum; k++){
+
+        double a = 0.111111111111112;//rand()/double(RAND_MAX);
+        double b = 0.2222222222223;//rand()/double(RAND_MAX);
+        //double c = a * b;
+        if (a < b){
+            int d = 1;
+            //std::cout << prvec[k][0] << " " << prvec[k][1] << std::endl;
+        }
+
+    }
+    gettimeofday(&dwEnd,NULL);  
+
+    int interval = 1000000*(dwEnd.tv_sec-dwStart.tv_sec)+(dwEnd.tv_usec-dwStart.tv_usec);
+    std::cout << interval << std::endl;
+    std::cout << float(interval)/1000000 << std::endl;
+
+    std::cout << (PrNum/float(interval))*1000000 << std::endl;
+
 */
